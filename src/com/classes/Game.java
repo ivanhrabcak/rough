@@ -4,7 +4,9 @@ import com.classes.KeyLisener.KeyListener;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,9 +23,11 @@ public class Game {
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(listener);
         while (true) {
-            field.draw();
-            Runtime.getRuntime().exec("clear");
+            BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+            String option = consoleReader.readLine();
+            break;
         }
+        field.draw();
 
     }
 }
