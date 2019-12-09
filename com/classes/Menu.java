@@ -1,5 +1,8 @@
 package com.classes;
 
+import com.classes.KeyLisener.KeyListener;
+import org.jnativehook.NativeHookException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +14,7 @@ public class Menu {
     private short treasures;
     private int[] playerPosition;
 
-    public Menu() throws IOException {
+    public Menu() throws IOException, NativeHookException {
         if (this.menu == null) {
             this.menu = "1. New Game\n2. Options\n3. Scores\n0. Exit\n? ";
         }
@@ -41,9 +44,10 @@ public class Menu {
         }
     }
 
-    private void newGame() {
+    private void newGame() throws NativeHookException, IOException {
         Field field = new Field(this.fieldSize, this.playerPosition);
-        field.printField();
+        KeyListener listener = new KeyListener();
+        Game game = new Game(listener, field);
     }
 
     private boolean options() throws IOException {

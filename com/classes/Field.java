@@ -25,8 +25,7 @@ public class Field {
         this.field = this.generateField();
         this.treasures = this.calcTreasures();
         this.treasurePositions = new int[this.treasures];
-        System.out.println(this.calcTreasures());
-        this.printField();
+        this.field[playerPosition[0]][playerPosition[1]] = 0;
     }
 
     private int calcTreasures() {
@@ -42,22 +41,18 @@ public class Field {
         return treasures;
     }
     
-    private short[][] generateField() {                        // probably broken
+    private short[][] generateField() {
         short[][] field = new short[this.fieldSize[0]][this.fieldSize[1]];
-        short[] array;
         for (short lines = 0; lines < this.fieldSize[0]; lines++) {
-            array = new short[this.fieldSize[1]];              // :((((
             for (short column = 0; column < this.fieldSize[1]; column++) {
-                array[column] = 0;
+                field[lines][column] = 0;
             }
-            field[lines] = array;
         }
         field = this.generateObjects(field);
         return field;
     }
 
-    private void draw() {
-        this.printField();
+    public void draw() {
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 short f = this.field[lines][columns];
@@ -94,7 +89,6 @@ public class Field {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
             }
         }
-        System.out.println(Arrays.deepToString(newField));
         return newField;
     }
 
@@ -103,8 +97,19 @@ public class Field {
         System.out.println(Arrays.deepToString(this.field));
     }
 
-    public boolean move(short[] position) {
-        System.out.println(":(((");
+    public boolean move(String direction) {
+        if (direction == "Up") {
+            this.playerPosition[0]++;
+        }
+        else if (direction == "Down") {
+            this.playerPosition[0]--;
+        }
+        else if (direction == "Right") {
+            this.playerPosition[1]++;
+        }
+        else if (direction == "Left") {
+            this.playerPosition[1]--;
+        }
         return true;
     }
 
