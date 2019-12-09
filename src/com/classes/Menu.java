@@ -42,7 +42,7 @@ public class Menu {
     }
 
     private void newGame() {
-        Field field = new Field(this.fieldSize, this.treasures, this.playerPosition);
+        Field field = new Field(this.fieldSize, this.playerPosition);
         field.printField();
     }
 
