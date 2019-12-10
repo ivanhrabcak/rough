@@ -23,9 +23,11 @@ public class Game {
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(listener);
         while (true) {
-            BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
-            String option = consoleReader.readLine();
-            break;
+            System.out.println(field.loop);
+            if (field.loop == false) {
+                break;
+            }
+            this.field.tick();
         }
         field.draw();
 

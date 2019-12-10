@@ -16,11 +16,18 @@ public class KeyListener implements NativeKeyListener {
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
-        this.field.move(nativeKeyEvent.getKeyText(nativeKeyEvent.getKeyCode()));
+
     }
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
+        String key = nativeKeyEvent.getKeyText(nativeKeyEvent.getKeyCode());
+        if (key == "Escape") {
+            this.field.br();
+        }
+        else {
+            this.field.move(key);
+        }
 
     }
 

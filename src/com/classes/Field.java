@@ -18,6 +18,7 @@ public class Field {
     private int[] treasurePositions;
     public int treasures;
     private short[][] field;
+    public boolean loop;
 
     public Field(short[] fieldSize, int[] playerPosition) {
         this.fieldSize = fieldSize;
@@ -26,6 +27,7 @@ public class Field {
         this.treasures = this.calcTreasures();
         this.treasurePositions = new int[this.treasures];
         this.field[playerPosition[0]][playerPosition[1]] = 0;
+        this.loop = true;
     }
 
     private int calcTreasures() {
@@ -97,12 +99,25 @@ public class Field {
         System.out.println(Arrays.deepToString(this.field));
     }
 
+    public boolean tick() {
+        for (short a = 0; a < this.fieldSize[0]; a++) {
+            for (short b = 0; b < this.fieldSize[1]; b++) {
+                if (this.field[a][b] == 0) {
+                    this.field[a][b] = -1;
+                    break;
+                }
+            }
+        }
+        this.field[this.playerPosition[0]][this.playerPosition[1]] = 0;
+        return true;
+    }
+
     public boolean move(String direction) {
         if (direction == "Up") {
-            this.playerPosition[0]++;
+            this.playerPosition[0]--;
         }
         else if (direction == "Down") {
-            this.playerPosition[0]--;
+            this.playerPosition[0]++;
         }
         else if (direction == "Right") {
             this.playerPosition[1]++;
@@ -110,7 +125,12 @@ public class Field {
         else if (direction == "Left") {
             this.playerPosition[1]--;
         }
+
         return true;
+    }
+
+    public void br() {
+        this.loop = false;
     }
 
 }
