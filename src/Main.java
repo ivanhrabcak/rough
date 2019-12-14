@@ -12,7 +12,7 @@ import org.jnativehook.NativeHookException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, NativeHookException {
+    public static void main(String[] args) throws IOException, NativeHookException, InterruptedException {
         Menu menu = new Menu();
     }
 

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class Game {
     private Field field;
-    Game(KeyListener listener, Field field) throws NativeHookException, IOException {
+    Game(KeyListener listener, Field field) throws NativeHookException, IOException, InterruptedException {
         this.field = field;
         // Disable logging
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
@@ -23,7 +23,7 @@ public class Game {
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(listener);
         while (true) {
-            System.out.println(field.loop);
+            //System.out.println(field.loop);
             if (field.loop == false) {
                 break;
             }

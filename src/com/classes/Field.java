@@ -55,6 +55,7 @@ public class Field {
     }
 
     public void draw() {
+        //System.out.print("\n\n\n\n\n\n\n");
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 short f = this.field[lines][columns];
@@ -99,7 +100,10 @@ public class Field {
         System.out.println(Arrays.deepToString(this.field));
     }
 
-    public boolean tick() {
+    public boolean tick() throws InterruptedException {
+        this.draw();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
         for (short a = 0; a < this.fieldSize[0]; a++) {
             for (short b = 0; b < this.fieldSize[1]; b++) {
                 if (this.field[a][b] == 0) {
@@ -108,6 +112,7 @@ public class Field {
                 }
             }
         }
+
         this.field[this.playerPosition[0]][this.playerPosition[1]] = 0;
         return true;
     }
