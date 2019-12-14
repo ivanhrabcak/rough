@@ -10,17 +10,17 @@ import java.util.Arrays;
 
 public class Menu {
     public String menu;
-    private Size fieldSize;
+    private short[] fieldSize;
     private short treasures;
-    private Position playerPosition;
+    private int[] playerPosition;
 
-    public Menu() throws IOException, NativeHookException, InterruptedException {
+    public Menu() throws IOException, NativeHookException {
         if (this.menu == null) {
             this.menu = "1. New Game\n2. Options\n3. Scores\n0. Exit\n? ";
         }
-        this.fieldSize = new Size( (short) 10, (short) 10); // Java is retarded
+        this.fieldSize = new short[]{10, 10};
         this.treasures = 40;
-        this.playerPosition = new Position(0, 0);
+        this.playerPosition = new int[]{0, 0};
 
         while (true) {
             System.out.print(menu);
@@ -44,8 +44,8 @@ public class Menu {
         }
     }
 
-    private void newGame() throws NativeHookException, IOException, InterruptedException {
-        Field field = new Field(this.fieldSize.size, this.playerPosition.position);
+    private void newGame() throws NativeHookException, IOException {
+        Field field = new Field(this.fieldSize, this.playerPosition);
         KeyListener listener = new KeyListener();
         Game game = new Game(listener, field);
     }
@@ -68,13 +68,13 @@ public class Menu {
                     System.out.print("\nFormat: x-y\nNew position? ");
                     inp = consoleReader.readLine();
                     String[] position = inp.split("-", 0);
-                    this.playerPosition = new Position((Integer.parseInt(position[0])), Integer.parseInt(position[1]));
+                    this.playerPosition = new int[]{Integer.parseInt(position[0]), Integer.parseInt(position[1])};
                     break;
                 case "3":
                     System.out.print("\nFormat: x-y\nNew position? ");
                     inp = consoleReader.readLine();
                     String[] size = inp.split("-");
-                    this.fieldSize = new Size(Short.parseShort(size[0]), Short.parseShort(size[1]));
+                    this.fieldSize = new short[]{Short.parseShort(size[0]), Short.parseShort(size[1])};
                     break;
                 default:
                     System.out.println("Unknown option.");
