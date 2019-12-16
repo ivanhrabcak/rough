@@ -61,7 +61,7 @@ public class Field {
                 if (f == -1) {
                     System.out.print(". ");
                 } else if (f == 1) {
-
+                    System.out.print("@ ");
                 } else if (f == 0) {
                     System.out.print("! ");
                 } else {
