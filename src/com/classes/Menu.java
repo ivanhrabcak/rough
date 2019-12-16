@@ -14,11 +14,11 @@ public class Menu {
     private short treasures;
     private int[] playerPosition;
 
-    public Menu() throws IOException, NativeHookException {
+    public Menu() throws IOException, NativeHookException, InterruptedException {
         if (this.menu == null) {
             this.menu = "1. New Game\n2. Options\n3. Scores\n0. Exit\n? ";
         }
-        this.fieldSize = new short[]{10, 10};
+        this.fieldSize = new short[]{50, 50};
         this.treasures = 40;
         this.playerPosition = new int[]{0, 0};
 
@@ -44,7 +44,7 @@ public class Menu {
         }
     }
 
-    private void newGame() throws NativeHookException, IOException {
+    private void newGame() throws NativeHookException, IOException, InterruptedException {
         Field field = new Field(this.fieldSize, this.playerPosition);
         KeyListener listener = new KeyListener();
         Game game = new Game(listener, field);

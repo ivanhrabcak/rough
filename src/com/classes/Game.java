@@ -12,7 +12,25 @@ import java.util.logging.Logger;
 
 public class Game {
     private Field field;
-    Game(KeyListener listener, Field field) throws NativeHookException, IOException {
+
+    private void clear() throws IOException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        String system = System.getProperty("os.name");
+        if (system.startsWith("Windows")) {
+            processBuilder.command("cls");
+        }
+        else {
+            processBuilder.command("clear");
+        }
+        Process process = processBuilder.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+    }
+
+    Game(KeyListener listener, Field field) throws NativeHookException, IOException, InterruptedException {
         this.field = field;
         // Disable logging
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
@@ -23,11 +41,14 @@ public class Game {
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(listener);
         while (true) {
-            System.out.println(field.loop);
+            this.clear();
+            //System.out.println(field.loop);
             if (field.loop == false) {
                 break;
             }
             this.field.tick();
+            this.field.draw();
+            Thread.sleep(30);
         }
         field.draw();
 

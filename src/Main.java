@@ -12,7 +12,8 @@ import org.jnativehook.NativeHookException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, NativeHookException {
+    public static void main(String[] args) throws IOException, NativeHookException, InterruptedException {
+        System.out.println("This does not work in an IDE console!!!!!!!\n\n");
         Menu menu = new Menu();
     }
 

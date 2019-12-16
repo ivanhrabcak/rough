@@ -19,8 +19,16 @@ public class Field {
     public int treasures;
     private short[][] field;
     public boolean loop;
+    public int treasuresCollected;
+    public int totalSteps;
+    public int stepsRemaining;
+    public boolean magicHax;
 
     public Field(short[] fieldSize, int[] playerPosition) {
+        this.magicHax = false;
+        this.totalSteps = 60;
+        this.stepsRemaining = 60;
+        this.treasuresCollected = 0;
         this.fieldSize = fieldSize;
         this.playerPosition = playerPosition;
         this.field = this.generateField();
@@ -55,7 +63,7 @@ public class Field {
     }
 
     public void draw() {
-        for (int lines = 0; lines < this.fieldSize[0]; lines++) {
+       for (int lines = 0; lines < this.fieldSize[0]; lines++) {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 short f = this.field[lines][columns];
                 if (f == -1) {
@@ -70,10 +78,68 @@ public class Field {
             }
             System.out.println("");
         }
+        this.gameBar();
+
+       /*
+       boolean canDraw = true;
+       int indexX = this.playerPosition[0];
+       int indexY = this.playerPosition[1];
+       int[] fieldOfView = new int[]{2, 5}; // {Vertical, Horizontal}
+       int[][] drawPositions = new int[(fieldOfView[0] * 2)+ (fieldOfView[1] * 2)][2]; // A cube!!!
+       int positionIndex = 0;
+       while (true) {
+           short f = this.field[indexX][indexY];
+           if (indexX - this.playerPosition[0] < fieldOfView[0] && indexX >= 0 && indexX < this.fieldSize[0] - 1) {
+               drawPositions[positionIndex] = new int[]{indexX - 1, indexY};
+               positionIndex++;
+           }
+           else if (indexY - this.playerPosition[1] < fieldOfView[1] && indexY >= 0 && indexY < this.fieldSize[1] - 1) {
+               drawPositions[positionIndex] = new int[]{indexX, indexY};
+               positionIndex++;
+           }
+           if (positionIndex == drawPositions.length - 1) {
+               break;
+           }
+       }
+        for (int lines = 0; lines < this.fieldSize[0]; lines++) {
+            canDraw = true;
+            for (int columns = 0; columns < this.fieldSize[1]; columns++) {
+                int[] currentPosition = new int[]{lines, columns};
+                boolean in = false;
+                for (int x = 0; x < drawPositions.length; x++) {
+                    if (drawPositions[x] == currentPosition) {
+                        in = true;
+                        break;
+                    }
+                }
+                if (in) {
+                    break;
+                }
+                short f = this.field[lines][columns];
+                if (!canDraw) {
+                    System.out.print(".");
+                }
+                else if (f == -1) {
+                    System.out.print(". ");
+                } else if (f == 1) {
+                    System.out.print("@ ");
+                    canDraw = false;
+                } else if (f == 0) {
+                    System.out.print("! ");
+                } else {
+                    System.out.print("T ");
+                }
+            }
+            System.out.println("");
+        }
+        this.gameBar();
+
+        */
     }
 
+
     public short[][] generateObjects(short[][] field) { // probably not broken
-        Random random = new Random(1);
+        Random random = new Random();
         short[][] newField = new short[this.fieldSize[0]][this.fieldSize[1]];
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
 
@@ -109,6 +175,18 @@ public class Field {
             }
         }
         this.field[this.playerPosition[0]][this.playerPosition[1]] = 0;
+        if (this.stepsRemaining == 0 && this.treasuresCollected != this.treasures) {
+            System.out.println("you lost :(((");
+            this.loop = false;
+        }
+        else if (this.stepsRemaining == 0 && this.treasuresCollected == this.treasures) {
+            System.out.println("YOU WON!!!!!!! :)))");
+            this.loop = false;
+        }
+        else if (this.treasuresCollected == this.treasures) {
+            System.out.println("YOU WON!!!!!! :))))");
+            this.loop = false;
+        }
         return true;
     }
 
@@ -120,23 +198,57 @@ public class Field {
 
         }
         catch (Exception e) {
-            System.out.println("wall");
             return false;
         }
         return true;
         }
 
-    public boolean move(String direction) {
+    private boolean checkAhead(String direction) {
+        if (this.magicHax) {
+            return true;
+        }
+        short f;
+        f = -5;
         if (direction == "Up" && this.isWall(new int[]{this.playerPosition[0] - 1, this.playerPosition[1]}) == true) {
-            this.playerPosition[0]--;
+            f = this.field[this.playerPosition[0] - 1][this.playerPosition[1]];
         }
         else if (direction == "Down" && this.isWall(new int[]{this.playerPosition[0] + 1, this.playerPosition[1]}) == true) {
-            this.playerPosition[0]++;
+            f = this.field[this.playerPosition[0] + 1][this.playerPosition[1]];
         }
         else if (direction == "Right" && this.isWall(new int[]{this.playerPosition[0], this.playerPosition[1] + 1}) == true) {
-            this.playerPosition[1]++;
+            f = this.field[this.playerPosition[0]][this.playerPosition[1] + 1];
         }
         else if (direction == "Left" && this.isWall(new int[]{this.playerPosition[0], this.playerPosition[1] - 1}) == true) {
+            f = this.field[this.playerPosition[0]][this.playerPosition[1] - 1];;
+        }
+        else {
+            return false;
+        }
+        if (f == 1) {               /* There is a wall in the direction the player is moving */
+            return false;
+        }
+        else if (f == 2) {          /* There is a treasure in the direction the player is moving */
+            this.treasuresCollected++;
+        }
+        this.stepsRemaining--;
+        return true;
+    }
+
+    public boolean move(String direction) {
+        boolean canMove = this.checkAhead(direction);
+        if (!canMove) {
+            return true;
+        }
+        if (direction == "Up") {
+            this.playerPosition[0]--;
+        }
+        else if (direction == "Down") {
+            this.playerPosition[0]++;
+        }
+        else if (direction == "Right") {
+            this.playerPosition[1]++;
+        }
+        else if (direction == "Left") {
             this.playerPosition[1]--;
         }
 
@@ -145,6 +257,10 @@ public class Field {
 
     public void br() {
         this.loop = false;
+    }
+
+    private void gameBar() {
+        System.out.println("Steps remaining: " + this.stepsRemaining + ", Treasures collected: " + this.treasuresCollected);
     }
 
 }
