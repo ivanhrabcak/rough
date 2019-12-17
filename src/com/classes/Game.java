@@ -16,8 +16,8 @@ public class Game {
     private void clear() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String system = System.getProperty("os.name");
-        if (system.startsWith("Windows")) {
-            processBuilder.command("cls");
+        if (system.contains("Windows")) {
+            processBuilder.command("cmd", "/c", "cls");
         }
         else {
             processBuilder.command("clear");
