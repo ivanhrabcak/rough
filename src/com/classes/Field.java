@@ -82,19 +82,18 @@ public class Field {
         this.gameBar();*/
 
         int[] fieldOfView = new int[]{3, 3}; // fov on each size shape - <>
-        int[][] drawPositions = new int[(fieldOfView[0] * 2) * (fieldOfView[1] * 2)][2];
+        List<int[]> drawPositions = new ArrayList<>();
         int indexX = this.playerPosition[0];
         int indexY = this.playerPosition[1];
-        int drawPositionsIndex = 0;
+        //int drawPositionsIndex = 0;
         boolean canDraw = false;
         int[] currentPosition;
 
         for (int x = indexX - fieldOfView[0]; x < indexX + fieldOfView[0]; x++) {
             for (int y = indexY - fieldOfView[1]; y < indexY + fieldOfView[1]; y++) {
                 currentPosition = new int[]{x, y};
-                if (this.isWall(currentPosition) && this.field[x][y] != 1) {
-                    drawPositions[drawPositionsIndex] = new int[]{x, y};
-                    drawPositionsIndex++;
+                if (this.isWall(currentPosition)) {//&& this.field[x][y] != 1) {
+                    drawPositions.add(new int[]{x, y});
                 }/*
                 else if (!this.isWall(currentPosition)) {
                     continue;
@@ -112,8 +111,8 @@ public class Field {
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 currentPosition = new int[]{lines, columns};
-                for (int i = 0; i <= drawPositionsIndex; i++) {
-                    if (currentPosition[0] == drawPositions[i][0] && currentPosition[1] == drawPositions[i][1]) {
+                for (int i = 0; i <= drawPositions.size(); i++) {
+                    if (currentPosition[0] == drawPositions.get(i)[0] && currentPosition[1] == drawPositions.get(i)[1]) {
                         condition = true;
                         canDraw = true;
                         break;
