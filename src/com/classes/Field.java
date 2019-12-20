@@ -63,6 +63,7 @@ public class Field {
     }
 
     public void draw() {
+        /*
        for (int lines = 0; lines < this.fieldSize[0]; lines++) {
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 short f = this.field[lines][columns];
@@ -78,52 +79,66 @@ public class Field {
             }
             System.out.println("");
         }
-        this.gameBar();
+        this.gameBar();*/
 
-       /*
-       boolean canDraw = true;
-       int indexX = this.playerPosition[0];
-       int indexY = this.playerPosition[1];
-       int[] fieldOfView = new int[]{2, 5}; // {Vertical, Horizontal}
-       int[][] drawPositions = new int[(fieldOfView[0] * 2)+ (fieldOfView[1] * 2)][2]; // A cube!!!
-       int positionIndex = 0;
-       while (true) {
-           short f = this.field[indexX][indexY];
-           if (indexX - this.playerPosition[0] < fieldOfView[0] && indexX >= 0 && indexX < this.fieldSize[0] - 1) {
-               drawPositions[positionIndex] = new int[]{indexX - 1, indexY};
-               positionIndex++;
-           }
-           else if (indexY - this.playerPosition[1] < fieldOfView[1] && indexY >= 0 && indexY < this.fieldSize[1] - 1) {
-               drawPositions[positionIndex] = new int[]{indexX, indexY};
-               positionIndex++;
-           }
-           if (positionIndex == drawPositions.length - 1) {
-               break;
-           }
-       }
+        int[] fieldOfView = new int[]{3, 3}; // fov on each size shape - <>
+        int[][] drawPositions = new int[(fieldOfView[0] * 2) + (fieldOfView[1] * 2)][2];
+        int indexX = this.playerPosition[0];
+        int indexY = this.playerPosition[1];
+        int drawPositionsIndex = 0;
+        boolean canDraw = false;
+        int[] currentPosition;
+
+        for (int x = indexX - fieldOfView[0]; x < indexX + fieldOfView[0]; x++) {
+            for (int y = indexY - fieldOfView[1]; y < indexY + fieldOfView[1]; y++) {
+                currentPosition = new int[]{x, y};
+                if (this.isWall(currentPosition)) {//&& this.field[x][y] != 1) {
+                    drawPositions[drawPositionsIndex] = new int[]{x, y};
+                    drawPositionsIndex++;
+                }/*
+                else if (!this.isWall(currentPosition)) {
+                    continue;
+                }
+                else if (this.field[x][y] == 1 && x >= this.playerPosition[0] && y <= this.playerPosition[1]) {
+                    drawPositions[drawPositionsIndex] = new int[]{x, y};
+                    drawPositionsIndex++;
+                    break;
+                }
+                */
+
+            }
+            drawPositionsIndex = 0;
+        }
+        boolean condition = false;
+
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
-            canDraw = true;
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
-                int[] currentPosition = new int[]{lines, columns};
-                boolean in = false;
-                for (int x = 0; x < drawPositions.length; x++) {
-                    if (drawPositions[x] == currentPosition) {
-                        in = true;
+                currentPosition = new int[]{lines, columns};
+                for (int i = 0; i < drawPositions.length; i++) {
+                    if (currentPosition[0] == drawPositions[i][0] && currentPosition[1] == drawPositions[i][1]) {
+                        condition = true;
+                        canDraw = true;
                         break;
                     }
                 }
-                if (in) {
-                    break;
+                if (!condition) {
+                    canDraw = false;
+                    condition = false;
                 }
-                short f = this.field[lines][columns];
+                else {
+                    condition = false;
+                }
                 if (!canDraw) {
-                    System.out.print(".");
+                    canDraw = false;
+                    System.out.print(". ");
+                    continue;
                 }
-                else if (f == -1) {
+
+                short f = this.field[lines][columns];
+                if (f == -1) {
                     System.out.print(". ");
                 } else if (f == 1) {
                     System.out.print("@ ");
-                    canDraw = false;
                 } else if (f == 0) {
                     System.out.print("! ");
                 } else {
@@ -134,7 +149,6 @@ public class Field {
         }
         this.gameBar();
 
-        */
     }
 
 
