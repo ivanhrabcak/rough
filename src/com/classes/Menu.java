@@ -10,17 +10,17 @@ import java.util.Arrays;
 
 public class Menu {
     public String menu;
-    private short[] fieldSize;
+    private Size fieldSize;
     private short treasures;
-    private int[] playerPosition;
+    private Position playerPosition;
 
     public Menu() throws IOException, NativeHookException, InterruptedException {
         if (this.menu == null) {
             this.menu = "1. New Game\n2. Options\n3. Scores\n0. Exit\n? ";
         }
-        this.fieldSize = new short[]{50, 50};
+        this.fieldSize = new Size(50, 50);
         this.treasures = 40;
-        this.playerPosition = new int[]{0, 0};
+        this.playerPosition = new Position(0, 0);
 
         while (true) {
             System.out.print(menu);
@@ -68,13 +68,13 @@ public class Menu {
                     System.out.print("\nFormat: x-y\nNew position? ");
                     inp = consoleReader.readLine();
                     String[] position = inp.split("-", 0);
-                    this.playerPosition = new int[]{Integer.parseInt(position[0]), Integer.parseInt(position[1])};
+                    this.playerPosition = new Position(Integer.parseInt(position[0]), Integer.parseInt(position[1]));
                     break;
                 case "3":
                     System.out.print("\nFormat: x-y\nNew position? ");
                     inp = consoleReader.readLine();
                     String[] size = inp.split("-");
-                    this.fieldSize = new short[]{Short.parseShort(size[0]), Short.parseShort(size[1])};
+                    this.fieldSize = new Size(Short.parseShort(size[0]), Short.parseShort(size[1]));
                     break;
                 default:
                     System.out.println("Unknown option.");

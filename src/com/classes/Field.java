@@ -1,5 +1,7 @@
 package com.classes;
 
+import com.classes.Fields.*;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -11,18 +13,18 @@ import java.util.Random;
  */
 
 public class Field {
-    public short[] fieldSize;
+    public Size fieldSize;
     public Position playerPosition;
     //private Position treasurePositions;
     public int treasures;
-    private short[][] field;
+    private SmallField[][] field;
     public boolean loop;
     public int treasuresCollected;
     public int totalSteps;
     public int stepsRemaining;
     public boolean magicHax;
 
-    public Field(short[] fieldSize, Position playerPosition) {
+    public Field(Size fieldSize, Position playerPosition) {
         this.magicHax = false;
         this.totalSteps = 60;
         this.stepsRemaining = 60;
@@ -32,24 +34,24 @@ public class Field {
         this.field = this.generateField();
         this.treasures = this.calcTreasures();
         //this.treasurePositions = new int[this.treasures];
-        setField(playerPosition, 0);
+        setField(playerPosition, new PlayerSmallField());
         this.loop = true;
     }
 
-    private int getField(Position position) {
+    private SmallField getField(Position position) {
         return this.field[position.x][position.y];
     }
 
-    private void setField(Position position, int value) {
-        this.field[position.x][position.y] = (short) value;
+    private void setField(Position position, SmallField field) {
+        this.field[position.x][position.y] = field;
     }
 
-    private int calcTreasures() {
+    private int calcTreasures() { // TODO: Remove
         int treasures = 0;
-        for (short lines = 0; lines < this.fieldSize[0]; lines++) {
-            for (short columns = 0; columns < this.fieldSize[1]; columns++) {
-                short field = this.field[lines][columns];
-                if (field == 2) {
+        for (short lines = 0; lines < fieldSize.sizex; lines++) {
+            for (short columns = 0; columns < this.fieldSize.sizey; columns++) {
+                SmallField field = getField(new Position(lines, columns));
+                if (field.getType() == SmallFieldType.TREASURE) {
                     treasures++;
                 }
             }
@@ -57,11 +59,11 @@ public class Field {
         return treasures;
     }
     
-    private short[][] generateField() {
-        short[][] field = new short[this.fieldSize[0]][this.fieldSize[1]];
-        for (short lines = 0; lines < this.fieldSize[0]; lines++) {
-            for (short column = 0; column < this.fieldSize[1]; column++) {
-                field[lines][column] = 0;
+    private SmallField[][] generateField() {
+        SmallField[][] field = new SmallField[this.fieldSize.sizex][this.fieldSize.sizey];
+        for (short lines = 0; lines < this.fieldSize.sizex; lines++) {
+            for (short column = 0; column < this.fieldSize.sizey; column++) {
+                field[lines][column] = new PlayerSmallField();
             }
         }
         field = this.generateObjects(field);
@@ -70,8 +72,8 @@ public class Field {
 
     public void draw() {
         /*
-       for (int lines = 0; lines < this.fieldSize[0]; lines++) {
-            for (int columns = 0; columns < this.fieldSize[1]; columns++) {
+       for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
+            for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
                 short f = this.field[lines][columns];
                 if (f == -1) {
                     System.out.print(". ");
@@ -87,19 +89,19 @@ public class Field {
         }
         this.gameBar();*/
 
-        int[] fieldOfView = new int[]{3, 3}; // fov on each size shape - <>
-        int[][] drawPositions = new int[(fieldOfView[0] * 2) + (fieldOfView[1] * 2)][2];
+        Size fieldOfView = new Size(3, 3); // fov on each size shape - <>
+        Position[] drawPositions = new Position[(fieldOfView.sizex * 2) + (fieldOfView.sizey * 2)];
         int indexX = this.playerPosition.x;
         int indexY = this.playerPosition.y;
         int drawPositionsIndex = 0;
         boolean canDraw = false;
-        int[] currentPosition;
+        Position currentPosition;
 
-        for (int x = indexX - fieldOfView[0]; x < indexX + fieldOfView[0]; x++) {
-            for (int y = indexY - fieldOfView[1]; y < indexY + fieldOfView[1]; y++) {
-                currentPosition = new int[]{x, y};
-                if (this.isInBounds(currentPosition)) {//&& this.field[x][y] != 1) {
-                    drawPositions[drawPositionsIndex] = new int[]{x, y};
+        for (int x = indexX - fieldOfView.sizex; x < indexX + fieldOfView.sizex; x++) {
+            for (int y = indexY - fieldOfView.sizey; y < indexY + fieldOfView.sizey; y++) {
+                currentPosition = new Position(x, y);
+                if (this.isInBounds(currentPosition)) {
+                    drawPositions[drawPositionsIndex] = new Position(x, y);
                     drawPositionsIndex++;
                 }/*
                 else if (!this.isWall(currentPosition)) {
@@ -117,11 +119,12 @@ public class Field {
         }
         boolean condition = false;
 
-        for (int lines = 0; lines < this.fieldSize[0]; lines++) {
-            for (int columns = 0; columns < this.fieldSize[1]; columns++) {
-                currentPosition = new int[]{lines, columns};
-                for (int i = 0; i < drawPositions.length; i++) {
-                    if (currentPosition[0] == drawPositions[i][0] && currentPosition[1] == drawPositions[i][1]) {
+        for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
+            for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
+                for (Position drawPosition : drawPositions) {
+                    currentPosition = new Position(lines, columns);
+                        // NullPointerException
+                    if (currentPosition != null || currentPosition.x == drawPosition.x && currentPosition.y == drawPosition.y) {
                         condition = true;
                         canDraw = true;
                         break;
@@ -140,16 +143,10 @@ public class Field {
                     continue;
                 }
 
-                short f = this.field[lines][columns];
-                if (f == -1) {
-                    System.out.print(". ");
-                } else if (f == 1) {
-                    System.out.print("@ ");
-                } else if (f == 0) {
-                    System.out.print("! ");
-                } else {
-                    System.out.print("T ");
-                }
+
+                SmallField f = getField(new Position(lines, columns));
+                System.out.print(f.getString() + " ");
+
             }
             System.out.println("");
         }
@@ -158,23 +155,26 @@ public class Field {
     }
 
 
-    public short[][] generateObjects(short[][] field) { // probably not broken
+    public SmallField[][] generateObjects(SmallField[][] field) { // probably not broken
         Random random = new Random();
-        short[][] newField = new short[this.fieldSize[0]][this.fieldSize[1]];
-        for (int lines = 0; lines < this.fieldSize[0]; lines++) {
+        SmallField[][] newField = new SmallField[this.fieldSize.sizex][this.fieldSize.sizey];
+        for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
 
-            for (int columns = 0; columns < this.fieldSize[1]; columns++) {
+            for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
                 int n = random.nextInt(3);
                 if (n == 0) {
-                    newField[lines][columns] = -1;
+                    newField[lines][columns] = new EmptySmallField();
                 }
-                else {
-                    newField[lines][columns] = (short) n;
+                else if (n == 1){
+                    newField[lines][columns] = new WallSmallField();
+                }
+                else if (n == 2) {
+                    newField[lines][columns] = new TreasureSmallField();
                 }
             }
         }
-        for (int lines = 0; lines < this.fieldSize[0]; lines++){
-            for (int columns = 0; columns < this.fieldSize[1]; columns++) {
+        for (int lines = 0; lines < this.fieldSize.sizex; lines++){
+            for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
             }
         }
         return newField;
@@ -186,14 +186,14 @@ public class Field {
     }
 
     private void clearField(Position position){
-        this.field[position.x][position.y] = -1;
+        this.field[position.x][position.y] = new EmptySmallField();
     }
 
     public boolean tick() {
-        for (short a = 0; a < this.fieldSize[0]; a++) {
-            for (short b = 0; b < this.fieldSize[1]; b++) {
-                boolean isPlayer = this.field[a][b] == 0;
-                if (getField(new Position(a, b)).getType() == ) {
+        for (short a = 0; a < this.fieldSize.sizex; a++) {
+            for (short b = 0; b < this.fieldSize.sizey; b++) {
+                boolean isPlayer = getField(new Position(a, b)).getType() == SmallFieldType.PLAYER;
+                if (getField(new Position(a, b)).getType() == SmallFieldType.WALL) {
 
                 }
                 if (isPlayer) {
@@ -203,7 +203,7 @@ public class Field {
                 }
             }
         }
-        this.field[this.playerPosition.x][this.playerPosition.y] = 0;
+        this.field[this.playerPosition.x][this.playerPosition.y] = new PlayerSmallField();
         if (this.stepsRemaining == 0 && this.treasuresCollected != this.treasures) {
             System.out.println("you lost :(((");
             this.loop = false;
@@ -220,8 +220,8 @@ public class Field {
     }
 
     private boolean isInBounds(Position position) {
-        boolean isXInNotBounds = position.x > this.fieldSize[0] || position.x < 0;
-        boolean isYInNotBounds = position.y > this.fieldSize[1] || position.y < 0;
+        boolean isXInNotBounds = position.x > this.fieldSize.sizex || position.x < 0;
+        boolean isYInNotBounds = position.y > this.fieldSize.sizey || position.y < 0;
 
         return !(isXInNotBounds || isYInNotBounds);
     }
@@ -230,33 +230,31 @@ public class Field {
         if (this.magicHax) {
             return true;
         }
-        int f;
-        f = -5;
         Position position;
         if (direction == "Up" && this.isInBounds(this.playerPosition)) {
             //f = this.field[this.playerPosition.x - 1][this.playerPosition.y];
             position = new Position(this.playerPosition.x - 1, this.playerPosition.y);
         }
-        else if (direction == "Down" && this.isInBounds(new int[]{this.playerPosition.x + 1, this.playerPosition.y}) == true) {
+        else if (direction == "Down" && this.isInBounds(new Position(this.playerPosition.x + 1, this.playerPosition.y)) == true) {
             //f = this.field[this.playerPosition.x + 1][this.playerPosition.y];
             position = new Position(this.playerPosition.x + 1, this.playerPosition.y);
         }
-        else if (direction == "Right" && this.isInBounds(new int[]{this.playerPosition.x, this.playerPosition.y + 1}) == true) {
+        else if (direction == "Right" && this.isInBounds(new Position(this.playerPosition.x, this.playerPosition.y + 1)) == true) {
             //f = this.field[this.playerPosition.x][this.playerPosition.y + 1];
             position = new Position(this.playerPosition.x, this.playerPosition.y + 1);
         }
-        else if (direction == "Left" && this.isInBounds(new int[]{this.playerPosition.x, this.playerPosition.y - 1}) == true) {
+        else if (direction == "Left" && this.isInBounds(new Position(this.playerPosition.x, this.playerPosition.y - 1)) == true) {
             //f = this.field[this.playerPosition.x][this.playerPosition.y - 1];
             position = new Position(this.playerPosition.x, this.playerPosition.y -1);
         }
         else {
             return false;
         }
-        f = getField(position);
-        if (f == 1) {               /* There is a wall in the direction the player is moving */
+        SmallField f = getField(position);
+        if (f.getType() == SmallFieldType.WALL) {               /* There is a wall in the direction the player is moving */
             return false;
         }
-        else if (f == 2) {          /* There is a treasure in the direction the player is moving */
+        else if (f.getType() == SmallFieldType.TREASURE) {          /* There is a treasure in the direction the player is moving */
             this.treasuresCollected++;
         }
         this.stepsRemaining--;
