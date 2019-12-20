@@ -1,4 +1,7 @@
-package com.classes;
+package com.classes.Fields;
+
+import com.classes.DiagnoalPositon;
+import com.classes.Position;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -10,19 +13,20 @@ import java.util.Random;
  *  2 - treasure (T)
  */
 
-public class Field {
+public class NewField {
     public short[] fieldSize;
     public Position playerPosition;
     //private Position treasurePositions;
     public int treasures;
-    private short[][] field;
+    //private short[][] field;
+    private SmallField[][] field;
     public boolean loop;
     public int treasuresCollected;
     public int totalSteps;
     public int stepsRemaining;
     public boolean magicHax;
 
-    public Field(short[] fieldSize, Position playerPosition) {
+    public NewField(short[] fieldSize, Position playerPosition) {
         this.magicHax = false;
         this.totalSteps = 60;
         this.stepsRemaining = 60;
@@ -34,6 +38,9 @@ public class Field {
         //this.treasurePositions = new int[this.treasures];
         setField(playerPosition, 0);
         this.loop = true;
+
+        DiagnoalPositon diagonalPosition = new DiagnoalPositon(10);
+        diagonalPosition.x = 5;
     }
 
     private int getField(Position position) {
@@ -56,12 +63,12 @@ public class Field {
         }
         return treasures;
     }
-    
-    private short[][] generateField() {
-        short[][] field = new short[this.fieldSize[0]][this.fieldSize[1]];
+
+    private SmallField[][] generateField() {
+        SmallField[][] field = new SmallField[this.fieldSize[0]][this.fieldSize[1]];
         for (short lines = 0; lines < this.fieldSize[0]; lines++) {
             for (short column = 0; column < this.fieldSize[1]; column++) {
-                field[lines][column] = 0;
+                field[lines][column] = new EmptySmallField();
             }
         }
         field = this.generateObjects(field);
@@ -140,16 +147,23 @@ public class Field {
                     continue;
                 }
 
-                short f = this.field[lines][columns];
-                if (f == -1) {
-                    System.out.print(". ");
-                } else if (f == 1) {
-                    System.out.print("@ ");
-                } else if (f == 0) {
-                    System.out.print("! ");
-                } else {
-                    System.out.print("T ");
+                SmallField f = this.field[lines][columns];
+                System.out.println(f.getString());
+
+                for (SmallField[] row : this.field) {
+                    for (SmallField line : row) {
+                        System.out.println(f.getString());
+                    }
                 }
+//                if (f == -1) {
+//                    System.out.print(". ");
+//                } else if (f == 1) {
+//                    System.out.print("@ ");
+//                } else if (f == 0) {
+//                    System.out.print("! ");
+//                } else {
+//                    System.out.print("T ");
+//                }
             }
             System.out.println("");
         }
@@ -157,19 +171,21 @@ public class Field {
 
     }
 
-
-    public short[][] generateObjects(short[][] field) { // probably not broken
+    public SmallField[][] generateObjects(SmallField[][] field) { // probably not broken
         Random random = new Random();
-        short[][] newField = new short[this.fieldSize[0]][this.fieldSize[1]];
+        SmallField[][] newField = new SmallField[this.fieldSize[0]][this.fieldSize[1]];
         for (int lines = 0; lines < this.fieldSize[0]; lines++) {
 
             for (int columns = 0; columns < this.fieldSize[1]; columns++) {
                 int n = random.nextInt(3);
                 if (n == 0) {
-                    newField[lines][columns] = -1;
+                    //newField[lines][columns] = -1;
                 }
-                else {
-                    newField[lines][columns] = (short) n;
+                else if (n == 1) {
+                    newField[lines][columns] = new WallSmallField();
+                }
+                else if (n == 2) {
+                    newField[lines][columns] = new TreasureSmallField();
                 }
             }
         }
@@ -185,20 +201,11 @@ public class Field {
         System.out.println(Arrays.deepToString(this.field));
     }
 
-    private void clearField(Position position){
-        this.field[position.x][position.y] = -1;
-    }
-
     public boolean tick() {
         for (short a = 0; a < this.fieldSize[0]; a++) {
             for (short b = 0; b < this.fieldSize[1]; b++) {
-                boolean isPlayer = this.field[a][b] == 0;
-                if (getField(new Position(a, b)).getType() == ) {
-
-                }
-                if (isPlayer) {
-                    //this.field[a][b] = -1;
-                    clearField(new Position(a, b));
+                if (this.field[a][b] == 0) {
+                    this.field[a][b] = -1;
                     break;
                 }
             }
@@ -280,6 +287,8 @@ public class Field {
         else if (direction == "Left") {
             this.playerPosition.y--;
         }
+
+        playerPosition = direction.adjustPlayerPosition(playerPosition);
 
         return true;
     }
