@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Rough:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Rough_jar</output-path>
-    <root id="archive" name="Rough.jar">
-      <element id="module-output" name="Rough" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/src/com/classes/KeyLisener/jnativehook.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
