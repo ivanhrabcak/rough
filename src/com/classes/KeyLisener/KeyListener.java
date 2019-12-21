@@ -1,6 +1,7 @@
 package com.classes.KeyLisener;
 
 
+import com.classes.Fields.Direction;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
@@ -29,7 +30,8 @@ public class KeyListener implements NativeKeyListener {
             field.magicHax = !field.magicHax;
         }
         else {
-            this.field.move(key);
+            Direction direction = new Direction(key);
+            this.field.move(direction);
         }
 
     }

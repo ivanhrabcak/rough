@@ -56,29 +56,28 @@ public class Menu {
             BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
             String option = consoleReader.readLine();
             String inp;
-            switch (option) {
-                case "0":
-                    return true;
-                case "1":
-                    System.out.print("New value? ");
-                    String value = consoleReader.readLine();
-                    this.treasures = Short.parseShort(value);
-                    break;
-                case "2":
-                    System.out.print("\nFormat: x-y\nNew position? ");
-                    inp = consoleReader.readLine();
-                    String[] position = inp.split("-", 0);
-                    this.playerPosition = new Position(Integer.parseInt(position[0]), Integer.parseInt(position[1]));
-                    break;
-                case "3":
-                    System.out.print("\nFormat: x-y\nNew position? ");
-                    inp = consoleReader.readLine();
-                    String[] size = inp.split("-");
-                    this.fieldSize = new Size(Short.parseShort(size[0]), Short.parseShort(size[1]));
-                    break;
-                default:
-                    System.out.println("Unknown option.");
-                    break;
+            if (option =="0") {
+                return true;
+            }
+            else if (option == "1") {
+                System.out.print("New value? ");
+                String value = consoleReader.readLine();
+                this.treasures = Short.parseShort(value);
+            }
+            else if (option == "2") {
+                System.out.print("\nFormat: x-y\nNew position? ");
+                inp = consoleReader.readLine();
+                String[] position = inp.split("-", 0);
+                this.playerPosition = new Position(Integer.parseInt(position[0]), Integer.parseInt(position[1]));
+                }
+            else if (option == "3") {
+                System.out.print("\nFormat: x-y\nNew position? ");
+                inp = consoleReader.readLine();
+                String[] size = inp.split("-");
+                this.fieldSize = new Size(Short.parseShort(size[0]), Short.parseShort(size[1]));
+            }
+            else {
+                System.out.println("Unknown option.");
             }
 
         }

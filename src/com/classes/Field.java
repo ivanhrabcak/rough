@@ -32,7 +32,6 @@ public class Field {
         this.fieldSize = fieldSize;
         this.playerPosition = playerPosition;
         this.field = this.generateField();
-        this.treasures = this.calcTreasures();
         //this.treasurePositions = new int[this.treasures];
         setField(playerPosition, new PlayerSmallField());
         this.loop = true;
@@ -68,6 +67,13 @@ public class Field {
         }
         field = this.generateObjects(field);
         return field;
+    }
+
+    private boolean isInBounds(Position position) {
+        boolean isXInNotBounds = position.x > fieldSize.sizex || position.x < 0;
+        boolean isYInNotBounds = position.y > fieldSize.sizey || position.y < 0;
+
+        return !(isXInNotBounds || isYInNotBounds);
     }
 
     public void draw() {
@@ -156,6 +162,7 @@ public class Field {
 
 
     public SmallField[][] generateObjects(SmallField[][] field) { // probably not broken
+        treasures = 0;
         Random random = new Random();
         SmallField[][] newField = new SmallField[this.fieldSize.sizex][this.fieldSize.sizey];
         for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
@@ -170,6 +177,7 @@ public class Field {
                 }
                 else if (n == 2) {
                     newField[lines][columns] = new TreasureSmallField();
+                    treasures++;
                 }
             }
         }
@@ -219,66 +227,24 @@ public class Field {
         return true;
     }
 
-    private boolean isInBounds(Position position) {
-        boolean isXInNotBounds = position.x > this.fieldSize.sizex || position.x < 0;
-        boolean isYInNotBounds = position.y > this.fieldSize.sizey || position.y < 0;
 
-        return !(isXInNotBounds || isYInNotBounds);
-    }
 
-    private boolean canMove(String direction) {
+    public boolean move(Direction direction) {
         if (this.magicHax) {
-            return true;
+            // TODO: Add magic hax
         }
-        Position position;
-        if (direction == "Up" && this.isInBounds(this.playerPosition)) {
-            //f = this.field[this.playerPosition.x - 1][this.playerPosition.y];
-            position = new Position(this.playerPosition.x - 1, this.playerPosition.y);
-        }
-        else if (direction == "Down" && this.isInBounds(new Position(this.playerPosition.x + 1, this.playerPosition.y)) == true) {
-            //f = this.field[this.playerPosition.x + 1][this.playerPosition.y];
-            position = new Position(this.playerPosition.x + 1, this.playerPosition.y);
-        }
-        else if (direction == "Right" && this.isInBounds(new Position(this.playerPosition.x, this.playerPosition.y + 1)) == true) {
-            //f = this.field[this.playerPosition.x][this.playerPosition.y + 1];
-            position = new Position(this.playerPosition.x, this.playerPosition.y + 1);
-        }
-        else if (direction == "Left" && this.isInBounds(new Position(this.playerPosition.x, this.playerPosition.y - 1)) == true) {
-            //f = this.field[this.playerPosition.x][this.playerPosition.y - 1];
-            position = new Position(this.playerPosition.x, this.playerPosition.y -1);
-        }
-        else {
-            return false;
-        }
-        SmallField f = getField(position);
+        direction.adjustPosition(playerPosition, fieldSize);
+
+
+        SmallField f = getField(playerPosition);
         if (f.getType() == SmallFieldType.WALL) {               /* There is a wall in the direction the player is moving */
-            return false;
+            direction.reverse();
+            direction.adjustPosition(playerPosition, fieldSize);
         }
         else if (f.getType() == SmallFieldType.TREASURE) {          /* There is a treasure in the direction the player is moving */
             this.treasuresCollected++;
         }
         this.stepsRemaining--;
-        return true;
-    }
-
-    public boolean move(String direction) {
-        boolean canMove = this.canMove(direction);
-        if (!canMove) {
-            return true;
-        }
-        if (direction == "Up") {
-            this.playerPosition.x--;
-        }
-        else if (direction == "Down") {
-            this.playerPosition.x++;
-        }
-        else if (direction == "Right") {
-            this.playerPosition.y++;
-        }
-        else if (direction == "Left") {
-            this.playerPosition.y--;
-        }
-
         return true;
     }
 
