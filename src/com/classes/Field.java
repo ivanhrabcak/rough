@@ -37,11 +37,11 @@ public class Field {
         this.loop = true;
     }
 
-    private SmallField getField(Position position) {
+    public SmallField getField(Position position) {
         return this.field[position.x][position.y];
     }
 
-    private void setField(Position position, SmallField field) {
+    public void setField(Position position, SmallField field) {
         this.field[position.x][position.y] = field;
     }
 
@@ -161,7 +161,7 @@ public class Field {
     }
 
 
-    public SmallField[][] generateObjects(SmallField[][] field) { // probably not broken
+    public SmallField[][] generateObjects(SmallField[][] field) {
         treasures = 0;
         Random random = new Random();
         SmallField[][] newField = new SmallField[this.fieldSize.sizex][this.fieldSize.sizey];
@@ -193,45 +193,14 @@ public class Field {
         System.out.println(Arrays.deepToString(this.field));
     }
 
-    private void clearField(Position position){
+    public void clearField(Position position){
         this.field[position.x][position.y] = new EmptySmallField();
     }
 
-    public boolean tick() {
-        for (short a = 0; a < this.fieldSize.sizex; a++) {
-            for (short b = 0; b < this.fieldSize.sizey; b++) {
-                boolean isPlayer = getField(new Position(a, b)).getType() == SmallFieldType.PLAYER;
-                if (getField(new Position(a, b)).getType() == SmallFieldType.WALL) {
-
-                }
-                if (isPlayer) {
-                    //this.field[a][b] = -1;
-                    clearField(new Position(a, b));
-                    break;
-                }
-            }
-        }
-        this.field[this.playerPosition.x][this.playerPosition.y] = new PlayerSmallField();
-        if (this.stepsRemaining == 0 && this.treasuresCollected != this.treasures) {
-            System.out.println("you lost :(((");
-            this.loop = false;
-        }
-        else if (this.stepsRemaining == 0 && this.treasuresCollected == this.treasures) {
-            System.out.println("YOU WON!!!!!!! :)))");
-            this.loop = false;
-        }
-        else if (this.treasuresCollected == this.treasures) {
-            System.out.println("YOU WON!!!!!! :))))");
-            this.loop = false;
-        }
-        return true;
-    }
-
-
-
     public boolean move(Direction direction) {
         if (this.magicHax) {
-            // TODO: Add magic hax
+            direction.adjustPosition(playerPosition, fieldSize);
+            return true;
         }
         direction.adjustPosition(playerPosition, fieldSize);
 
@@ -240,6 +209,7 @@ public class Field {
         if (f.getType() == SmallFieldType.WALL) {               /* There is a wall in the direction the player is moving */
             direction.reverse();
             direction.adjustPosition(playerPosition, fieldSize);
+            stepsRemaining++;
         }
         else if (f.getType() == SmallFieldType.TREASURE) {          /* There is a treasure in the direction the player is moving */
             this.treasuresCollected++;

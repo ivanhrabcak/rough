@@ -26,6 +26,9 @@ public class KeyListener implements NativeKeyListener {
         if (key == "Escape") {
             this.field.br();
         }
+        else if (key == "F") {
+            field.treasuresCollected = field.treasures;
+        }
         else if (key == "C") {
             field.magicHax = !field.magicHax;
         }

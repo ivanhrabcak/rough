@@ -19,7 +19,7 @@ public class Menu {
             this.menu = "1. New Game\n2. Options\n3. Scores\n0. Exit\n? ";
         }
         this.fieldSize = new Size(50, 50);
-        this.treasures = 40;
+        //this.treasures = 40;
         this.playerPosition = new Position(0, 0);
 
         while (true) {
