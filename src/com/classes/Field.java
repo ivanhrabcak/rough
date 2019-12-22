@@ -77,88 +77,61 @@ public class Field {
     }
 
     public void draw() {
-        /*
-       for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
-            for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
-                short f = this.field[lines][columns];
-                if (f == -1) {
-                    System.out.print(". ");
-                } else if (f == 1) {
-                    System.out.print("@ ");
-                } else if (f == 0) {
-                    System.out.print("! ");
-                } else {
-                    System.out.print("T ");
-                }
-            }
-            System.out.println("");
-        }
-        this.gameBar();*/
 
         Size fieldOfView = new Size(3, 3); // fov on each size shape - <>
-        Position[] drawPositions = new Position[(fieldOfView.sizex * 2) + (fieldOfView.sizey * 2)];
+        Position[] drawPositions = new Position[(fieldOfView.sizex * 2) * 2 + ((fieldOfView.sizey * 35) * 2)];
         int indexX = this.playerPosition.x;
         int indexY = this.playerPosition.y;
         int drawPositionsIndex = 0;
-        boolean canDraw = false;
         Position currentPosition;
 
         for (int x = indexX - fieldOfView.sizex; x < indexX + fieldOfView.sizex; x++) {
+            if (drawPositionsIndex == drawPositions.length - 1) {
+                drawPositionsIndex = 0;
+            }
             for (int y = indexY - fieldOfView.sizey; y < indexY + fieldOfView.sizey; y++) {
                 currentPosition = new Position(x, y);
                 if (this.isInBounds(currentPosition)) {
                     drawPositions[drawPositionsIndex] = new Position(x, y);
                     drawPositionsIndex++;
-                }/*
-                else if (!this.isWall(currentPosition)) {
-                    continue;
                 }
-                else if (this.field[x][y] == 1 && x >= this.playerPosition.x && y <= this.playerPosition.y) {
-                    drawPositions[drawPositionsIndex] = new int[]{x, y};
-                    drawPositionsIndex++;
-                    break;
-                }
-                */
-
             }
-            drawPositionsIndex = 0;
         }
         boolean condition = false;
+        boolean canDraw = false;
 
         for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
             for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
                 for (Position drawPosition : drawPositions) {
                     currentPosition = new Position(lines, columns);
-                        // NullPointerException
-                    if (currentPosition != null || currentPosition.x == drawPosition.x && currentPosition.y == drawPosition.y) {
-                        condition = true;
+                    // NullPointerException
+                    if (currentPosition == null || drawPosition == null) {
+                        break;
+                    }
+                    if (currentPosition != null && currentPosition.x == drawPosition.x && currentPosition.y == drawPosition.y) {
                         canDraw = true;
                         break;
                     }
                 }
-                if (!condition) {
-                    canDraw = false;
-                    condition = false;
-                }
-                else {
-                    condition = false;
-                }
-                if (!canDraw) {
-                    canDraw = false;
-                    System.out.print(". ");
-                    continue;
-                }
+
+                    if (canDraw) {
+                        SmallField f = getField(new Position(lines, columns));
+                        System.out.print(f.getString() + " ");
+                        canDraw = false;
+                    }
+                    else {
+                        System.out.print(". ");
+                    }
 
 
-                SmallField f = getField(new Position(lines, columns));
-                System.out.print(f.getString() + " ");
 
+
+                }
+                System.out.println("");
             }
-            System.out.println("");
-        }
         this.gameBar();
+        }
 
-    }
 
 
     public SmallField[][] generateObjects(SmallField[][] field) {
@@ -209,12 +182,15 @@ public class Field {
         if (f.getType() == SmallFieldType.WALL) {               /* There is a wall in the direction the player is moving */
             direction.reverse();
             direction.adjustPosition(playerPosition, fieldSize);
-            stepsRemaining++;
         }
         else if (f.getType() == SmallFieldType.TREASURE) {          /* There is a treasure in the direction the player is moving */
             this.treasuresCollected++;
+            this.stepsRemaining--;
         }
-        this.stepsRemaining--;
+        else if (f.getType() == SmallFieldType.EMPTY) {
+            this.stepsRemaining--;
+        }
+
         return true;
     }
 
