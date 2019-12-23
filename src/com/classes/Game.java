@@ -38,9 +38,9 @@ public class Game {
         for (short a = 0; a < field.fieldSize.sizex; a++) {
             for (short b = 0; b < field.fieldSize.sizey; b++) {
                 boolean isPlayer = field.getField(new Position(a, b)).getType() == SmallFieldType.PLAYER;
-                if (field.getField(new Position(a, b)).getType() == SmallFieldType.WALL) {
+                /*if (field.getField(new Position(a, b)).getType() == SmallFieldType.WALL) {
 
-                }
+                }*/
                 if (isPlayer) {
                     //field.field[a][b] = -1;
                     field.clearField(new Position(a, b));

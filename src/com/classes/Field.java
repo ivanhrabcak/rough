@@ -99,23 +99,32 @@ public class Field {
         }
         boolean condition = false;
         boolean canDraw = false;
+        boolean isWallBehind = false;
 
         for (int lines = 0; lines < this.fieldSize.sizex; lines++) {
+            isWallBehind = false;
             for (int columns = 0; columns < this.fieldSize.sizey; columns++) {
-                for (Position drawPosition : drawPositions) {
-                    currentPosition = new Position(lines, columns);
-                    // NullPointerException
-                    if (currentPosition == null || drawPosition == null) {
-                        break;
+
+                    for (Position drawPosition : drawPositions) {
+                        currentPosition = new Position(lines, columns);
+                        // NullPointerException
+                        if (currentPosition == null || drawPosition == null) {
+                            break;
+                        }
+                        if (currentPosition != null && currentPosition.x == drawPosition.x && currentPosition.y == drawPosition.y) {
+                            canDraw = true;
+                            break;
+                        }
                     }
-                    if (currentPosition != null && currentPosition.x == drawPosition.x && currentPosition.y == drawPosition.y) {
-                        canDraw = true;
-                        break;
+                    if (isWallBehind) {
+                        canDraw = false;
                     }
-                }
 
                     if (canDraw) {
                         SmallField f = getField(new Position(lines, columns));
+                        if (f.getType() == SmallFieldType.WALL) {
+                            isWallBehind = true;
+                        }
                         System.out.print(f.getString() + " ");
                         canDraw = false;
                     }
