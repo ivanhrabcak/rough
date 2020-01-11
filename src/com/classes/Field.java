@@ -17,7 +17,7 @@ public class Field {
     public Position playerPosition;
     //private Position treasurePositions;
     public int treasures;
-    private SmallField[][] field;
+    public SmallField[][] field;
     public boolean loop;
     public int treasuresCollected;
     public int totalSteps;
@@ -76,7 +76,8 @@ public class Field {
         return !(isXInNotBounds || isYInNotBounds);
     }
 
-    public void draw() {
+    public String draw() {
+        String output = "";
 
         Size fieldOfView = new Size(3, 3); // fov on each size shape - <>
         Position[] drawPositions = new Position[(fieldOfView.sizex * 2) * 2 + ((fieldOfView.sizey * 35) * 2)];
@@ -125,20 +126,21 @@ public class Field {
                         if (f.getType() == SmallFieldType.WALL) {
                             isWallBehind = true;
                         }
-                        System.out.print(f.getString() + " ");
+                        output = output + f.getString() + " ";
                         canDraw = false;
                     }
                     else {
-                        System.out.print(". ");
+                        output = output + ". ";
                     }
 
 
 
 
                 }
-                System.out.println("");
+                output = output + "\n";
             }
         this.gameBar();
+        return output;
         }
 
 
