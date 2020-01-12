@@ -85,7 +85,7 @@ public class Game {
                 break;
             }
             tick();
-            this.field.draw();
+            System.out.println(this.field.draw());
             Thread.sleep(30);
         }
         //field.draw();
