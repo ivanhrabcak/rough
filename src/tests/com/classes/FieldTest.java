@@ -22,7 +22,13 @@ class FieldTest {
 
 
     @Test
-    void drawCaseA() {
+    void leftToWallDiagonal_DrawnCorrectly() {
+        /*
+        . . . .
+        . @ T .
+        . ! @ .
+        . . . .
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -40,7 +46,13 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseB() {
+    void rightToWall_DrawnCorrectly() {
+        /*
+        . . . .
+        @ T . .
+        @ ! T .
+        . T . .
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -62,7 +74,13 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseC() {
+    void upToWall_DrawnCorrectly() {
+        /*
+        . T . .
+        . @ . .
+        . ! . .
+        . . . .
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -81,7 +99,13 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseD() {
+    void surroundedByWall() {
+        /*
+        . . . .
+        . @ @ @
+        . @ ! @
+        . @ @ @
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -105,7 +129,13 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseE() {
+    void diagonalToWallUp_DrawnCorrectly() {
+        /*
+        . . . .
+        . . T .
+        . @ . .
+        ! . . .
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -116,14 +146,20 @@ class FieldTest {
         field.field[3][0] = new PlayerSmallField();
 
         String expected = ". . . . \n" +
-                ". . . . \n" +
-                ". @ . . \n" +
-                "! . . . \n";
+                          ". . . . \n" +
+                          ". @ . . \n" +
+                          "! . . . \n";
         assertEquals(field.draw(), expected);
     }
 
     @Test
-    void drawCaseF() {
+    void leftLeftToWall_DrawnCorrectly() {
+        /*
+        . . . .
+        . . . .
+        . ! @ .
+        . @ T T
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -144,7 +180,12 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseG() {
+    void manyTreasures_DrawnCorrectly() {
+        /*
+        . T . .
+        T . T .
+        T ! @ T
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -167,7 +208,13 @@ class FieldTest {
     }
 
     @Test
-    void drawCaseH() {
+    void diagonalToWallDown_DrawnCorrectly() {
+        /*
+        . . . .
+        . . . .
+        . ! @ .
+        . . . T
+        */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -184,28 +231,15 @@ class FieldTest {
         assertEquals(field.draw(), expected);
     }
 
-    @Test
-    void drawCaseI() {
-        Position playerPosition = new Position(2, 2);
-        Field field = new Field(fieldSize, playerPosition);
-        resetField(field);
-        field.playerPosition = new Position(3, 2);
-        field.field[2][2] = new WallSmallField();
-        field.field[3][1] = new WallSmallField();
-
-        field.field[3][2] = new TreasureSmallField();
-
-        field.field[2][1] = new PlayerSmallField();
-
-        String expected = ". . . . \n" +
-                          ". . . . \n" +
-                          ". ! @ . \n" +
-                          ". @ . . \n";
-        assertEquals(field.draw(), expected);
-    }
 
     @Test
-    void drawCaseJ() {
+    void farFromPlayerSurrounded_DrawnCorrectly() {
+        /*
+        . . @ T
+        ! . . @
+        . . . .
+        . . . .
+         */
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
