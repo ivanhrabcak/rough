@@ -22,7 +22,7 @@ class FieldTest {
 
 
     @Test
-    void drawCase1() {
+    void drawCaseA() {
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -40,7 +40,7 @@ class FieldTest {
     }
 
     @Test
-    void drawCase2() {
+    void drawCaseB() {
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -62,7 +62,7 @@ class FieldTest {
     }
 
     @Test
-    void drawCase3() {
+    void drawCaseC() {
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -81,7 +81,7 @@ class FieldTest {
     }
 
     @Test
-    void drawCase4() {
+    void drawCaseD() {
         Position playerPosition = new Position(2, 2);
         Field field = new Field(fieldSize, playerPosition);
         resetField(field);
@@ -104,6 +104,124 @@ class FieldTest {
         assertEquals(field.draw(), expected);
     }
 
-    //@Test
+    @Test
+    void drawCaseE() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[2][1] = new WallSmallField();
+        field.field[1][2] = new TreasureSmallField();
+
+        field.field[3][0] = new PlayerSmallField();
+
+        String expected = ". . . . \n" +
+                ". . . . \n" +
+                ". @ . . \n" +
+                "! . . . \n";
+        assertEquals(field.draw(), expected);
+    }
+
+    @Test
+    void drawCaseF() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[2][2] = new WallSmallField();
+        field.field[3][1] = new WallSmallField();
+
+        field.field[3][2] = new TreasureSmallField();
+        field.field[3][3] = new TreasureSmallField();
+
+        field.field[2][1] = new PlayerSmallField();
+
+        String expected = ". . . . \n" +
+                          ". . . . \n" +
+                          ". ! @ . \n" +
+                          ". @ . . \n";
+        assertEquals(field.draw(), expected);
+    }
+
+    @Test
+    void drawCaseG() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[1][0] = new TreasureSmallField();
+        field.field[2][0] = new TreasureSmallField();
+        field.field[0][1] = new TreasureSmallField();
+        field.field[1][2] = new TreasureSmallField();
+        field.field[2][3] = new TreasureSmallField();
+
+        field.field[2][2] = new WallSmallField();
+
+        field.field[2][1] = new PlayerSmallField();
+
+        String expected = ". T . . \n" +
+                          "T . T . \n" +
+                          "T ! @ . \n" +
+                          ". . . . \n";
+        assertEquals(field.draw(), expected);
+    }
+
+    @Test
+    void drawCaseH() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[2][2] = new WallSmallField();
+        field.field[3][3] = new TreasureSmallField();
+
+        field.field[2][1] = new PlayerSmallField();
+
+        String expected = ". . . . \n" +
+                          ". . . . \n" +
+                          ". ! @ . \n" +
+                          ". . . T \n";
+        assertEquals(field.draw(), expected);
+    }
+
+    @Test
+    void drawCaseI() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[2][2] = new WallSmallField();
+        field.field[3][1] = new WallSmallField();
+
+        field.field[3][2] = new TreasureSmallField();
+
+        field.field[2][1] = new PlayerSmallField();
+
+        String expected = ". . . . \n" +
+                          ". . . . \n" +
+                          ". ! @ . \n" +
+                          ". @ . . \n";
+        assertEquals(field.draw(), expected);
+    }
+
+    @Test
+    void drawCaseJ() {
+        Position playerPosition = new Position(2, 2);
+        Field field = new Field(fieldSize, playerPosition);
+        resetField(field);
+        field.playerPosition = new Position(3, 2);
+        field.field[0][2] = new WallSmallField();
+        field.field[1][3] = new WallSmallField();
+
+        field.field[0][3] = new TreasureSmallField();
+
+        field.field[1][0] = new PlayerSmallField();
+
+        String expected = ". . @ . \n" +
+                          "! . . @ \n" +
+                          ". . . . \n" +
+                          ". . . . \n";
+        assertEquals(field.draw(), expected);
+    }
 
 }
