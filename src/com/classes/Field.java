@@ -57,7 +57,7 @@ public class Field {
         }
         return treasures;
     }
-    
+
     private SmallField[][] generateField() {
         SmallField[][] field = new SmallField[this.fieldSize.sizex][this.fieldSize.sizey];
         for (short lines = 0; lines < this.fieldSize.sizex; lines++) {
@@ -145,19 +145,68 @@ public class Field {
          */
         Size fieldOfViewSize = new Size(3, 3);
         SmallField[][] fieldOfView = new SmallField[fieldOfViewSize.sizex][fieldOfViewSize.sizey];
-        int fieldOfViewIndex = 0;
         String output = "";
         Position currentPosition = new Position(playerPosition.x, playerPosition.y);
 
-        for (int x = playerPosition.x - fieldOfViewSize.sizex; x < playerPosition.x + fieldOfViewSize.sizex + 1; x++) {
-            for (int y = playerPosition.y - fieldOfViewSize.sizey; y < playerPosition.y + fieldOfViewSize.sizey + 1; y++) {
+        int fieldOfViewXStart = playerPosition.x - fieldOfViewSize.sizex;
+        int fieldOfViewXEnd = playerPosition.x + fieldOfViewSize.sizex + 1;
+
+        int fieldOfViewYStart = playerPosition.y - fieldOfViewSize.sizey;
+        int fieldOfViewYEnd = playerPosition.y + fieldOfViewSize.sizey + 1;
+
+        for (int x = fieldOfViewXStart; x < fieldOfViewXEnd; x++) {
+            for (int y = fieldOfViewYStart; y < fieldOfViewYEnd; y++) {
                 currentPosition = new Position(x, y);
-                if (true) {;}
+                if (!isInBounds(currentPosition)) {
+                    continue;
+                }
+                if (getField(currentPosition).getType() == SmallFieldType.WALL) {
+                    if (currentPosition.x == playerPosition.x) {
+                        if (currentPosition.y > playerPosition.y) {
+                            fieldOfView[x][y] = getField(currentPosition);
+                        } else {
+                            eraseSmallField(fieldOfView[currentPosition.x], 0, currentPosition.y);
+                        }
+                    }
+                }
+                else if (currentPosition.x > playerPosition.x) {
+                    if (currentPosition.y > playerPosition.y) {
+                        fieldOfView[x][y] = getField(currentPosition);
+                    } else {
+                        eraseSmallField(fieldOfView[currentPosition.x], currentPosition.y - 1, currentPosition.y);
+                    }
+
+                }
+                else if (currentPosition.x < playerPosition.x) {
+                    if (currentPosition.y > playerPosition.y) {
+                        fieldOfView[x][y] = getField(currentPosition);
+                    } else {
+                        eraseSmallField(fieldOfView[currentPosition.x], currentPosition.y - 1, currentPosition.y);
+                    }
+
+                }
             }
         }
+        for (int x = 0; x < fieldSize.sizex; x++) {
+            for (int y = 0; y < fieldSize.sizey; y++) {
+                if (x >= fieldOfViewXStart && y >= fieldOfViewYStart) {
+                    if (x <= fieldOfViewXEnd && y <= fieldOfViewYEnd) {
+                        output = output + fieldOfView[x][y].getString() + " ";
+                    }
+                }
+                else {
+                    output = output + ". ";
+                }
+            }
         }
 
-
+        return output;
+    }
+    private void eraseSmallField(SmallField[] field, int startY, int endY) {
+        for (int y = startY; y < endY; y++) {
+            field[y] = new EmptySmallField();
+        }
+    }
 
     public SmallField[][] generateObjects(SmallField[][] field) {
         treasures = 0;
