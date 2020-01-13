@@ -77,6 +77,7 @@ public class Field {
     }
 
     public String draw() {
+        /*
         String output = "";
 
         Size fieldOfView = new Size(3, 3); // fov on each size shape - <>
@@ -141,6 +142,19 @@ public class Field {
             }
         this.gameBar();
         return output;
+         */
+        Size fieldOfViewSize = new Size(3, 3);
+        SmallField[][] fieldOfView = new SmallField[fieldOfViewSize.sizex][fieldOfViewSize.sizey];
+        int fieldOfViewIndex = 0;
+        String output = "";
+        Position currentPosition = new Position(playerPosition.x, playerPosition.y);
+
+        for (int x = playerPosition.x - fieldOfViewSize.sizex; x < playerPosition.x + fieldOfViewSize.sizex + 1; x++) {
+            for (int y = playerPosition.y - fieldOfViewSize.sizey; y < playerPosition.y + fieldOfViewSize.sizey + 1; y++) {
+                currentPosition = new Position(x, y);
+                if (true) {;}
+            }
+        }
         }
 
 
