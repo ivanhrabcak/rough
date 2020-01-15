@@ -77,7 +77,6 @@ public class Field {
     }
 
     public String draw() {
-        /*
         String output = "";
 
         Size fieldOfView = new Size(3, 3); // fov on each size shape - <>
@@ -142,55 +141,45 @@ public class Field {
             }
         this.gameBar();
         return output;
-         */
+
+
+/*
         Size fieldOfViewSize = new Size(3, 3);
-        SmallField[][] fieldOfView = new SmallField[fieldOfViewSize.sizex][fieldOfViewSize.sizey];
+        fieldOfView fieldOfView = new fieldOfView(playerPosition, fieldOfViewSize);
         String output = "";
         Position currentPosition = new Position(playerPosition.x, playerPosition.y);
 
-        int fieldOfViewXStart = playerPosition.x - fieldOfViewSize.sizex;
-        int fieldOfViewXEnd = playerPosition.x + fieldOfViewSize.sizex + 1;
-
-        int fieldOfViewYStart = playerPosition.y - fieldOfViewSize.sizey;
-        int fieldOfViewYEnd = playerPosition.y + fieldOfViewSize.sizey + 1;
-
-        for (int x = fieldOfViewXStart; x < fieldOfViewXEnd; x++) {
-            for (int y = fieldOfViewYStart; y < fieldOfViewYEnd; y++) {
+        for (int x = fieldOfView.getStart().x; x < fieldOfViewEnd.x; x++) {
+            for (int y = fieldOfViewStart.y; y < fieldOfViewEnd.y; y++) {
                 currentPosition = new Position(x, y);
                 if (!isInBounds(currentPosition)) {
                     continue;
                 }
-                if (getField(currentPosition).getType() == SmallFieldType.WALL) {
-                    if (currentPosition.x == playerPosition.x) {
-                        if (currentPosition.y > playerPosition.y) {
-                            fieldOfView[x][y] = getField(currentPosition);
-                        } else {
-                            eraseSmallField(fieldOfView[currentPosition.x], 0, currentPosition.y);
-                        }
-                    }
+                SmallField currentField = getField(currentPosition);
+                if (currentField.getType() != SmallFieldType.WALL) {
+                    fieldOfView[fieldOfViewIndexX][fieldOfViewIndexY] = currentField;
+                    fieldOfViewIndexY++;
                 }
-                else if (currentPosition.x > playerPosition.x) {
-                    if (currentPosition.y > playerPosition.y) {
-                        fieldOfView[x][y] = getField(currentPosition);
-                    } else {
-                        eraseSmallField(fieldOfView[currentPosition.x], currentPosition.y - 1, currentPosition.y);
+                else {
+                    if (currentPosition.x > playerPosition.x) {
+                        eraseSmallField(field[x], y, field.length - 1);
                     }
+                    else {
+                        fieldOfView[fieldOfViewIndexX][fieldOfViewIndexY] = currentField;
+                    }
+                    fieldOfViewIndexY++;
+                }
 
-                }
-                else if (currentPosition.x < playerPosition.x) {
-                    if (currentPosition.y > playerPosition.y) {
-                        fieldOfView[x][y] = getField(currentPosition);
-                    } else {
-                        eraseSmallField(fieldOfView[currentPosition.x], currentPosition.y - 1, currentPosition.y);
-                    }
-
-                }
             }
+            fieldOfViewIndexX++;
+            fieldOfViewIndexY = 0;
         }
+
+
         for (int x = 0; x < fieldSize.sizex; x++) {
             for (int y = 0; y < fieldSize.sizey; y++) {
-                if (x >= fieldOfViewXStart && y >= fieldOfViewYStart) {
-                    if (x <= fieldOfViewXEnd && y <= fieldOfViewYEnd) {
+                if (x >= fieldOfViewStart.x && y >= fieldOfViewStart.y) {
+                    if (x <= fieldOfViewEnd.x && y <= fieldOfViewEnd.y) {
                         output = output + fieldOfView[x][y].getString() + " ";
                     }
                 }
@@ -200,8 +189,19 @@ public class Field {
             }
         }
 
+
         return output;
+ */
     }
+
+    private void eraseField(SmallField[][] field) {
+        for (int x = 0; x < field.length; x++) {
+            for (int y = 0; y < field[0].length; y++) {
+                field[x][y] = new EmptySmallField();
+                }
+            }
+        }
+
     private void eraseSmallField(SmallField[] field, int startY, int endY) {
         for (int y = startY; y < endY; y++) {
             field[y] = new EmptySmallField();
@@ -236,8 +236,8 @@ public class Field {
     }
 
 
-    public void printField() {
-        System.out.println(Arrays.deepToString(this.field));
+    public void printField(SmallField[][] field) {
+        System.out.println(Arrays.deepToString(field));
     }
 
     public void clearField(Position position){
