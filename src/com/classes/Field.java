@@ -149,6 +149,8 @@ public class Field {
         String output = "";
         Position currentPosition = new Position(playerPosition.x, playerPosition.y);
 
+        // index = x - fieldOfView.getStart()
+
         for (int x = fieldOfView.getStart().x; x < fieldOfViewEnd.x; x++) {
             for (int y = fieldOfViewStart.y; y < fieldOfViewEnd.y; y++) {
                 currentPosition = new Position(x, y);
@@ -191,7 +193,9 @@ public class Field {
 
 
         return output;
+
  */
+
     }
 
     private void eraseField(SmallField[][] field) {
