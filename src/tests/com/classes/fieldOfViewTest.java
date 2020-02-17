@@ -17,13 +17,15 @@ class fieldOfViewTest {
         FieldOfView fieldOfView = new FieldOfView(testPlayerPosition, testFieldOfViewSize);
         fieldOfView.writeField(new TreasureSmallField(), new Position(0, 0));
         fieldOfView.resetFieldOfView();
+
+        SmallField expected = new EmptySmallField();
         for (SmallField[] line : fieldOfView.toArray()) {
             for (SmallField f : line) {
                 if (f == null) {
                     continue;
                 }
                 else if (f.getType() != SmallFieldType.EMPTY) {
-                    throw new Exception();
+                    assertEquals(expected, f);
                 }
             }
         }
